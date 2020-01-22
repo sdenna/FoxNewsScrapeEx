@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,23 +8,82 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Are you ready to use Jsoup??"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:id="@+id/textView"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="click me"
-        android:onClick="scrape"
-        android:id="@+id/button"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center_horizontal">
-    </Button>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:srcCompat="@drawable/fox_news"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"/>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Exclusive Clips"
+                android:onClick="scrapeFoxMain"
+                android:id="@+id/buttonFoxMain"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorPrimary">
+            </Button>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Fox News Flash"
+                android:onClick="scrapeFoxNewsFlash"
+                android:id="@+id/buttonFoxNewsFlash"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorPrimary">
+            </Button>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Opinions on Fox"
+                android:onClick="scrapeOpinionsFox"
+                android:id="@+id/buttonOpinionFox"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorPrimary">
+            </Button>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Main Articles"
+                android:onClick="scrapeMiddleStoriesFox"
+                android:id="@+id/buttonMiddleStoriesFox"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorPrimary">
+            </Button>
+
+
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:text="       Select a category of News" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
