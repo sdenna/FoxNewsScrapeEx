@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -23,8 +24,16 @@ public class DisplayArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_article);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        TextView catTitle = (TextView) findViewById(R.id.fox_news_category_title);
+
+
         Intent intent = getIntent();
         myStories = intent.getParcelableArrayListExtra("stories");
+        String category = intent.getStringExtra("category");
+        catTitle.setText(category);
+
         // Get a reference to the ListView element to display all stories from the webscrape
         ListView allStoriesListView = (ListView) findViewById(R.id.storyList);
         // CustomAdapter is an inner class defined below that details how to adapt this arraylist of data

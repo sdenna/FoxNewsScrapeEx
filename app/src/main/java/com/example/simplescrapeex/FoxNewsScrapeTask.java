@@ -25,6 +25,8 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
                                     ".collection.collection-must-read.js-must-read",
                                     ".collection.collection-opinion.has-load-more.js-opinion"};
 
+    String[] categoryNames = {"Exclusive Clips", "Fox News Flash", "Opinions on Fox"};
+
             /*
             *  index 0: Articles from the middle of the page
             *  index 1: Articles from Fox News Flash
@@ -33,7 +35,6 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
 
     public FoxNewsScrapeTask(final Activity mActivity) {
-        MainActivity.myTitles.clear();          // removes all previous stories
         this.mActivity = mActivity;             // gets a reference to the Activity that this task was started from
         myStories = new ArrayList<>();
     }
@@ -71,6 +72,7 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
         Intent intent = new Intent(this.mActivity.getBaseContext(), DisplayArticleActivity.class);
         intent.putExtra("stories", myStories);
+        intent.putExtra("category", categoryNames[MainActivity.choice]);
         mActivity.startActivity(intent);
     }
 }

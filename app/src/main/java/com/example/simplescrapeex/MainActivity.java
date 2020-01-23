@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,14 +19,15 @@ public class MainActivity extends AppCompatActivity {
     static Button buttonFoxOpinion;
     static int choice = -1;
 
-    static ArrayList<String> myTitles;
     static boolean done = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myTitles = new ArrayList<>();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         textView = (TextView)findViewById(R.id.textView);
         buttonFox = (Button)findViewById(R.id.buttonFoxMain);
@@ -51,7 +54,4 @@ public class MainActivity extends AppCompatActivity {
         final FoxNewsScrapeTask myScrape = new FoxNewsScrapeTask(this);
         myScrape.execute();
     }
-
 }
-
-

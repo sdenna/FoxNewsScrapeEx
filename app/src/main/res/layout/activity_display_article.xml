@@ -7,6 +7,10 @@
     tools:context=".DisplayArticleActivity"
     android:orientation="vertical">
 
+    <include
+        layout = "@layout/toolbar_sub"
+        android:id="@+id/toolbar" />
+
 
     <ListView
         android:layout_width="match_parent"
