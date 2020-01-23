@@ -3,22 +3,20 @@ package com.example.simplescrapeex;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DisplayArticleActivity extends AppCompatActivity {
 
-    // will change to be of type Story after get this working
-    private ArrayList<String> myStories;
+    private ArrayList<Story> myStories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +24,7 @@ public class DisplayArticleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_article);
 
         Intent intent = getIntent();
-        // will change to be of type Story after get this working
-        myStories = intent.getStringArrayListExtra("stories");
+        myStories = intent.getParcelableArrayListExtra("stories");
         // Get a reference to the ListView element to display all stories from the webscrape
         ListView allStoriesListView = (ListView) findViewById(R.id.storyList);
         // CustomAdapter is an inner class defined below that details how to adapt this arraylist of data
@@ -40,18 +37,16 @@ public class DisplayArticleActivity extends AppCompatActivity {
         allStoriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String link = myStories.get(i).getLink();
 
-                // will update this to be of type Story
-                String story = myStories.get(i);
+                // Code that will launch a web browser with the link to this story
+                //https://stackoverflow.com/questions/2201917/how-can-i-open-a-url-in-androids-web-browser-from-my-application
 
-//                // start an intent to load the page to edit this element that has been clicked on
-//                Intent intent = new Intent(DisplayEventsActivity.this, EditEventActivity.class);
-//                intent.putExtra("event", event);
-//                startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                startActivity(intent);
             }
         });
     }
-
 
 
     public void backToHome(View v) {
@@ -106,24 +101,13 @@ public class DisplayArticleActivity extends AppCompatActivity {
             // need to say view.findViewById because you have to reference the element that
             // was gotten from the LayoutInflater above
 
+            // Get the specific Story in the ArrayList we are currently displaying and set title
+            // in the custom xml row_data.xml
             TextView storyTitle = (TextView) view.findViewById(R.id.storyTitle);
-
-
-            // Here I am getting the specific Story in the ArrayList we are currently displaying
-            String s = myStories.get(i);
-
-            // Eventually I will adjust this to pull out the title and the link
-
-            // Set the correct story title and set the link to be active for what we are
-            // displaying in the list
-            storyTitle.setText(s);
-
+            storyTitle.setText(myStories.get(i).getTitle());
 
             // return this view element with the correct data inserted
             return view;
         }
-
-
     }
-
 }

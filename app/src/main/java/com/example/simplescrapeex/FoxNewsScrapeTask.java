@@ -7,84 +7,54 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
 
-import static androidx.core.content.ContextCompat.startActivity;
 
 public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
     // Used this source to learn how to make an AsyncTask able to start an intent
+    // https://stackoverflow.com/questions/25326617/start-another-activity-from-an-asynctask
+
     private final Activity mActivity;
 
     Document document;
-    //ArrayList<String> myTitles;
     Elements tags, h2Tags;
-
     ArrayList<Story> myStories;
 
+    String[] initialSelectString = {".collection.collection-article-list",
+                                    ".collection.collection-must-read.js-must-read",
+                                    ".collection.collection-opinion.has-load-more.js-opinion"};
+
+            /*
+            *  index 0: Articles from the middle of the page
+            *  index 1: Articles from Fox News Flash
+            *  index 2: Articles from Opinion Section
+            */
+
+
     public FoxNewsScrapeTask(final Activity mActivity) {
-        MainActivity.myTitles.clear();
-        this.mActivity = mActivity;
+        MainActivity.myTitles.clear();          // removes all previous stories
+        this.mActivity = mActivity;             // gets a reference to the Activity that this task was started from
         myStories = new ArrayList<>();
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         String url = "https://www.foxnews.com/";
-       // myTitles = new ArrayList<>();           // Arraylist for the titles of articles
-
 
         try {
             document = Jsoup.connect(url).validateTLSCertificates(false).get();
 
-            /* Articles from the middle of the page */
-            if (MainActivity.choice == 1) {
-               tags = document.select(".collection.collection-article-list");
-               h2Tags = tags.select("h2");
+            tags = document.select(initialSelectString[MainActivity.choice]);
+            h2Tags = tags.select("h2");
 
-                MainActivity.myTitles.clear();  // delete old articles
-
-                for (Element title : h2Tags) {
-                    String s = title.select(".title").text();
-                    MainActivity.myTitles.add(s);
-
-                    //For the next part - an ArrayList of Story objects to send to a ListView
-                    // extract the href link that is inside the h2
-                    String link = title.select("a[href]").attr("href");
-                    Story story = new Story(s, link);
-                    myStories.add(story);
-                    // add it to the Story arraylist
-                    //Log.d("Denna", link);
-                }
-
-
+            for (Element title : h2Tags) {
+                String s = title.select(".title").text();
+                // extract the href link that is inside the h2
+                String link = title.select("a[href]").attr("href");
+                Story story = new Story(s, link);
+                myStories.add(story);
             }
-
-            // Second section - Fox News Flash
-
-            else if (MainActivity.choice == 2) {
-                tags = document.select(".collection.collection-must-read.js-must-read");
-                h2Tags = tags.select("h2");
-
-                for (Element title : h2Tags) {
-                    String s = title.select(".title").text();
-                    MainActivity.myTitles.add(s);
-                }
-            }
-
-            else {
-                // Third section - Opinion articles
-
-                tags = document.select(".collection.collection-opinion.has-load-more.js-opinion");
-                h2Tags = tags.select("h2");
-
-                for (Element title : h2Tags) {
-                    String s = title.select(".title").text();
-                    MainActivity.myTitles.add(s);
-                }
-            }
-
         }
         catch (Exception e){
             Log.i("Denna", "Error: inside catch for doInBackground");
@@ -96,23 +66,11 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        String allTitles = "";
-        for (String s: MainActivity.myTitles)
-            allTitles += s + "\n\n";
+        // Start Display intent to show Stories in a listview.  Waits to start intent until the data has finished scraping
+        // https://stackoverflow.com/questions/25326617/start-another-activity-from-an-asynctask
 
-        // Start Display intent to show Stories in a listview.  Waits to show them until the data has finished scraping
         Intent intent = new Intent(this.mActivity.getBaseContext(), DisplayArticleActivity.class);
-        intent.putExtra("stories", MainActivity.myTitles);
+        intent.putExtra("stories", myStories);
         mActivity.startActivity(intent);
-        Log.d("Denna", "All done!");
     }
-
-    /*
-    Intent intent = new Intent(MainActivity.this, DisplayArticleActivity.class);
-        intent.putExtra("stories", myTitles);
-        startActivity(intent);
-     */
-
-
-
 }
