@@ -1,4 +1,6 @@
 package com.example.simplescrapeex;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import org.jsoup.Jsoup;
@@ -8,18 +10,30 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
+    // Used this source to learn how to make an AsyncTask able to start an intent
+    private final Activity mActivity;
+
     Document document;
-    ArrayList<String> myTitles;
+    //ArrayList<String> myTitles;
     Elements tags, h2Tags;
 
-    ArrayList<Story> myStories = new ArrayList<>();
+    ArrayList<Story> myStories;
+
+    public FoxNewsScrapeTask(final Activity mActivity) {
+        MainActivity.myTitles.clear();
+        this.mActivity = mActivity;
+        myStories = new ArrayList<>();
+    }
 
     @Override
     protected Void doInBackground(Void... voids) {
         String url = "https://www.foxnews.com/";
-        myTitles = new ArrayList<>();           // Arraylist for the titles of articles
+       // myTitles = new ArrayList<>();           // Arraylist for the titles of articles
+
 
         try {
             document = Jsoup.connect(url).validateTLSCertificates(false).get();
@@ -29,10 +43,11 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
                tags = document.select(".collection.collection-article-list");
                h2Tags = tags.select("h2");
 
+                MainActivity.myTitles.clear();  // delete old articles
 
                 for (Element title : h2Tags) {
                     String s = title.select(".title").text();
-                    myTitles.add(s);
+                    MainActivity.myTitles.add(s);
 
                     //For the next part - an ArrayList of Story objects to send to a ListView
                     // extract the href link that is inside the h2
@@ -40,7 +55,7 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
                     Story story = new Story(s, link);
                     myStories.add(story);
                     // add it to the Story arraylist
-                    Log.d("Denna", link);
+                    //Log.d("Denna", link);
                 }
 
 
@@ -54,11 +69,11 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
                 for (Element title : h2Tags) {
                     String s = title.select(".title").text();
-                    myTitles.add(s);
+                    MainActivity.myTitles.add(s);
                 }
             }
 
-            else if (MainActivity.choice == 3){
+            else {
                 // Third section - Opinion articles
 
                 tags = document.select(".collection.collection-opinion.has-load-more.js-opinion");
@@ -66,21 +81,10 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
 
                 for (Element title : h2Tags) {
                     String s = title.select(".title").text();
-                    myTitles.add(s);
+                    MainActivity.myTitles.add(s);
                 }
             }
 
-            else
-            {
-                // chose option 4
-                tags = document.select(".collection.collection-article-list");
-                h2Tags = tags.select("h2");
-
-                for (Element title : h2Tags) {
-                    String s = title.select(".title").text();
-                    myTitles.add(s);
-                }
-            }
         }
         catch (Exception e){
             Log.i("Denna", "Error: inside catch for doInBackground");
@@ -93,11 +97,22 @@ public class FoxNewsScrapeTask extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
 
         String allTitles = "";
-        for (String s: myTitles)
+        for (String s: MainActivity.myTitles)
             allTitles += s + "\n\n";
 
-        MainActivity.textView.setText(allTitles);
-
+        // Start Display intent to show Stories in a listview.  Waits to show them until the data has finished scraping
+        Intent intent = new Intent(this.mActivity.getBaseContext(), DisplayArticleActivity.class);
+        intent.putExtra("stories", MainActivity.myTitles);
+        mActivity.startActivity(intent);
+        Log.d("Denna", "All done!");
     }
+
+    /*
+    Intent intent = new Intent(MainActivity.this, DisplayArticleActivity.class);
+        intent.putExtra("stories", myTitles);
+        startActivity(intent);
+     */
+
+
 
 }
