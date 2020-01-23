@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         buttonFoxOpinion = (Button)findViewById(R.id.buttonOpinionFox);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -52,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.item1:
-                Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
+                choice = 0;
+                final FoxNewsScrapeTask myScrape = new FoxNewsScrapeTask(this);
+                myScrape.execute();
                 return true;
             case R.id.item2:
-                Toast.makeText(getApplicationContext(),"Item 2 Selected",Toast.LENGTH_LONG).show();
+                choice = 1;
+                final FoxNewsScrapeTask myScrape1 = new FoxNewsScrapeTask(this);
+                myScrape1.execute();
                 return true;
             case R.id.item3:
-                Toast.makeText(getApplicationContext(),"Item 3 Selected",Toast.LENGTH_LONG).show();
+                choice = 2;
+                final FoxNewsScrapeTask myScrape2 = new FoxNewsScrapeTask(this);
+                myScrape2.execute();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
